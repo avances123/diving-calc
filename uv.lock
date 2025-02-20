@@ -42,12 +42,14 @@ wheels = [
 name = "pyscuba"
 version = "0.1.0"
 source = { editable = "." }
-dependencies = [
+
+[package.optional-dependencies]
+dev = [
     { name = "pytest" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pytest", specifier = ">=8.3.4" }]
+requires-dist = [{ name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.4" }]
 provides-extras = ["dev"]
 
 [[package]]
