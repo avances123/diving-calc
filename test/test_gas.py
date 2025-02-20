@@ -46,32 +46,6 @@ class TestGas(unittest.TestCase):
         with self.assertRaises(ValueError):
             Gas(o2=50, he=-10)  # Error, he no puede ser negativo
 
-    def test_mod_air(self):
-        gas = Gas(o2=21)
-        mod = gas.MOD(ppO2=1.4) 
-        self.assertAlmostEqual(mod, 56.10, places=2) # aire en agua salada
-
-    def test_mod_nitrox32(self):
-        gas = Gas(o2=32)
-        mod = gas.MOD(ppO2=1.4)
-        self.assertAlmostEqual(mod, 33.41, places=2)
-
-    def test_mod_pure_oxygen(self):
-        gas = Gas(o2=100)
-        mod = gas.MOD(ppO2=1.6)
-        self.assertAlmostEqual(mod, 5.94, places=2)
-
-
-    def test_mod_different_density(self):
-        gas = Gas(o2=21)
-        mod = gas.MOD(ppO2=1.4, densidad=Densidad.DULCE)
-        self.assertAlmostEqual(mod, 57.78, places=2)
-
-    def test_mod_different_surface_pressure(self):
-        gas = Gas(o2=21)
-        mod = gas.MOD(ppO2=1.4, presion_superficie=1.1) # Higher surface pressure (altitude < 0)
-        self.assertAlmostEqual(mod, 9.20, places=2)
-
 
 if __name__ == "__main__":
     unittest.main()

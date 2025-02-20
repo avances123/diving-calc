@@ -44,7 +44,7 @@ class Gas:
         prefix = "Helitrox" if percent_o2 >= simple_o2_in_air else "Trimix"
         return f"{prefix} {percent_o2}/{percent_he}"
  
-    def MOD(self, ppO2) -> int:
+    def mod(self, ppO2) -> int:
         return ppO2 / (self.o2 / 100) # divido el 1.4 por 0.21
         
         

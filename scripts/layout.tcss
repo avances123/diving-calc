@@ -1,0 +1,32 @@
+Screen {
+    layout: horizontal;
+}
+
+
+.derecha {
+    layout: vertical;
+}
+
+
+
+.menu {
+    dock: left;
+    width: 20;
+    height: 100%;
+    border: $secondary;
+}
+
+
+
+.datos {
+    width: 1fr;
+    height: 1fr;
+    border: $secondary;
+}
+
+
+.teoria {
+    width: 1fr;
+    height: 1fr;
+    border: $secondary;
+}
