@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "pytest>=8.3.4",
     "textual>=2.1.0",
 ]
 
@@ -15,10 +16,13 @@ build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
-testpaths = ["test"]
+testpaths = ["tests"]
+addopts = "--cov=src --cov-report=term"
+
 
 [dependency-groups]
 dev = [
     "textual-dev>=1.7.0",
     "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
 ]
