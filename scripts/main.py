@@ -147,6 +147,30 @@ class BEST_MIX(CajaCalculos):
             mod = 0
         self.resultado.resultado = mod  # Actualiza el resultado
 
+class PARTIAL_PRESSURE(CajaCalculos):
+    def compose(self) -> ComposeResult:
+        with HorizontalGroup():
+            self.input1 = FilaCalculo(label="Depth (m)", placeholder="25")
+            self.input2 = FilaCalculo(label="O2 Fraction (%)",  placeholder="36")
+            yield self.input1
+            yield self.input2
+        self.resultado = ResultadoCalculo("PARTIAL PRESSURE (%)")
+        yield self.resultado
+
+    def on_input_changed(self, event: Input.Changed) -> None:
+        """Calcula el nuevo resultado cuando cambia un input."""
+        try:
+            valor1 = float(self.input1.input.value) if self.input1.input.value else 0
+            valor2 = float(self.input2.input.value) if self.input2.input.value else 0
+        except ValueError:
+            valor1 = valor2 = 0  # Si hay un valor no numérico
+        d = DepthConverter.for_salt_water(0) # Agua del mar
+        n = NitroxCalculator(d)
+        try:
+            mod = n.partial_pressure(valor2, valor1)
+        except (ZeroDivisionError, ValueError):
+            mod = 0
+        self.resultado.resultado = mod  # Actualiza el resultado
 
 
 
@@ -157,11 +181,15 @@ class CalculatorScreen(Screen):
                 yield (mod := MOD())
                 yield (ead := EAD())
                 yield (best_mix := BEST_MIX())
+                yield (partial_pressure := PARTIAL_PRESSURE())
             yield (teoria := Teoria("theory/mod.md", id="teoria"))
         mod.border_title = "MOD"
         ead.border_title = "EAD"
         best_mix.border_title = "BEST MIX"
+        partial_pressure.border_title = "BEST MIX"
         teoria.border_title = "Teoria"
+        yield Footer()
+        yield Header()
 
 class PyScubaApp(App):
     """A Textual app to manage stopwatches."""
@@ -171,10 +199,13 @@ class PyScubaApp(App):
         ("t", "trimix_calculator", "Toggle Trimix Calculator")
     ]
 
+
+    
+    
+
     def on_ready(self) -> None:
         self.push_screen(CalculatorScreen())
-
-
+        
 
 if __name__ == "__main__":
     app = PyScubaApp()

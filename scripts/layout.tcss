@@ -15,6 +15,7 @@ Screen {
 
     CajaCalculos {    
         width: 1fr;
+        height: 1fr;
         padding: 1;
         border: tab $foreground 50%;  
         &:focus {
