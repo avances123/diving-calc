@@ -98,11 +98,11 @@ class MOD(CajaCalculos):
 class EAD(CajaCalculos):
     def compose(self) -> ComposeResult:
         with HorizontalGroup():
-            self.input1 = FilaCalculo(label="Max ppO2 (bar)", placeholder="Ej. 1.6")
-            self.input2 = FilaCalculo(label="O2 Fraction (%)")
+            self.input1 = FilaCalculo(label="Depth (m)", placeholder="25")
+            self.input2 = FilaCalculo(label="O2 Fraction (%)",  placeholder="36")
             yield self.input1
             yield self.input2
-        self.resultado = ResultadoCalculo("MOD (m)")
+        self.resultado = ResultadoCalculo("EAD (m)")
         yield self.resultado
 
     def on_input_changed(self, event: Input.Changed) -> None:
@@ -115,10 +115,38 @@ class EAD(CajaCalculos):
         d = DepthConverter.for_salt_water(0) # Agua del mar
         n = NitroxCalculator(d)
         try:
-            mod = n.mod(valor1, valor2)
+            mod = n.ead(valor2, valor1)
         except (ZeroDivisionError, ValueError):
             mod = 0
         self.resultado.resultado = mod  # Actualiza el resultado
+
+
+
+class BEST_MIX(CajaCalculos):
+    def compose(self) -> ComposeResult:
+        with HorizontalGroup():
+            self.input1 = FilaCalculo(label="Depth (m)", placeholder="25")
+            self.input2 = FilaCalculo(label="Max ppO2 (bar)", placeholder="1.6")
+            yield self.input1
+            yield self.input2
+        self.resultado = ResultadoCalculo("BEST MIX (%)")
+        yield self.resultado
+
+    def on_input_changed(self, event: Input.Changed) -> None:
+        """Calcula el nuevo resultado cuando cambia un input."""
+        try:
+            valor1 = float(self.input1.input.value) if self.input1.input.value else 0
+            valor2 = float(self.input2.input.value) if self.input2.input.value else 0
+        except ValueError:
+            valor1 = valor2 = 0  # Si hay un valor no numérico
+        d = DepthConverter.for_salt_water(0) # Agua del mar
+        n = NitroxCalculator(d)
+        try:
+            mod = n.best_mix(valor2, valor1)
+        except (ZeroDivisionError, ValueError):
+            mod = 0
+        self.resultado.resultado = mod  # Actualiza el resultado
+
 
 
 
@@ -128,9 +156,11 @@ class CalculatorScreen(Screen):
             with VerticalGroup():
                 yield (mod := MOD())
                 yield (ead := EAD())
+                yield (best_mix := BEST_MIX())
             yield (teoria := Teoria("theory/mod.md", id="teoria"))
         mod.border_title = "MOD"
         ead.border_title = "EAD"
+        best_mix.border_title = "BEST MIX"
         teoria.border_title = "Teoria"
 
 class PyScubaApp(App):
