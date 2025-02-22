@@ -1,5 +1,5 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, Header, Digits, Static, OptionList, ContentSwitcher, Markdown
+from textual.widgets import Footer, Header, Digits, Static, OptionList, ContentSwitcher, MarkdownViewer
 from textual.containers import Horizontal, Vertical, VerticalScroll, HorizontalGroup, VerticalGroup
 from textual.widgets import Input, Label
 from textual.screen import Screen
@@ -9,8 +9,13 @@ from pyscuba.calculators.nitrox_calculator import NitroxCalculator
 from pyscuba.physics.depth_converter import DepthConverter
 
 
-class Teoria(Markdown):
-    pass
+class Teoria(MarkdownViewer):
+    def __init__(self, file_path: str, *args, **kwargs) -> None:
+        # Lee el contenido del archivo
+        with open(file_path, 'r') as file:
+            self.markdown_content = file.read()
+        kwargs["show_table_of_contents"] = False
+        super().__init__(self.markdown_content, *args, **kwargs)
 
 class CajaCalculos(Static):
     pass
@@ -52,7 +57,7 @@ class MOD(CajaCalculos):
             self.input2 = FilaCalculo(label="O2 Fraction (%)")
             yield self.input1
             yield self.input2
-        self.resultado = ResultadoCalculo("MOD")
+        self.resultado = ResultadoCalculo("MOD (m)")
         yield self.resultado
 
     def on_input_changed(self, event: Input.Changed) -> None:
@@ -80,7 +85,7 @@ class CalculatorScreen(Screen):
         with HorizontalGroup():
             with VerticalGroup():
                 yield (mod := MOD())
-            yield (teoria := Teoria("", id="teoria"))
+            yield (teoria := Teoria("theory/mod.md", id="teoria"))
         mod.border_title = "MOD"
         teoria.border_title = "Teoria"
 
