@@ -3,7 +3,10 @@ from textual.widgets import Footer, Header, Digits, Static, OptionList, ContentS
 from textual.containers import Horizontal, Vertical, VerticalScroll, HorizontalGroup, VerticalGroup
 from textual.widgets import Input, Label
 from textual.screen import Screen
+from textual.reactive import reactive
+
 from pyscuba.calculators.nitrox_calculator import NitroxCalculator
+from pyscuba.physics.depth_converter import DepthConverter
 
 
 class Teoria(Markdown):
@@ -21,51 +24,64 @@ class FilaCalculo(Static):
     def compose(self) -> ComposeResult:
         with VerticalGroup():
             yield Label(self.label, classes="label-variable")
-            yield Input(type="number", placeholder=self.placeholder)
+            self.input = Input(type="number", placeholder=self.placeholder)
+            yield self.input
 
 class ResultadoCalculo(Static):
-    def __init__(self, label: str, resultado: float, *args, **kwargs) -> None:
+
+    resultado: float|None = reactive(0)
+    
+    def __init__(self, label):
         self.label = label
-        self.resultado = str(resultado)
-        super().__init__()
+        super().__init__()  # Llama al constructor de Base
 
     def compose(self) -> ComposeResult:
         yield Label(self.label)
-        yield Digits(self.resultado)
+        self.digits_widget = Digits(str(self.resultado))  # Guarda el widget Digits en un atributo
+        yield self.digits_widget
 
+    def watch_resultado(self, value: float) -> None:
+        """Se ejecuta automáticamente cuando cambia 'resultado'."""
+        if hasattr(self, 'digits_widget'):  # Asegúrate de que el widget Digits existe
+            self.digits_widget.update(str(value))  # A
 
 class MOD(CajaCalculos):
     def compose(self) -> ComposeResult:
         with HorizontalGroup():
-            yield FilaCalculo(label="Max ppO2 (bar)", placeholder="Ej. 1.6")
-            yield FilaCalculo(label="O2 Fraction (%)")
-        yield ResultadoCalculo("jfiods", 324432, classes="derecha-resultado")
+            self.input1 = FilaCalculo(label="Max ppO2 (bar)", placeholder="Ej. 1.6")
+            self.input2 = FilaCalculo(label="O2 Fraction (%)")
+            yield self.input1
+            yield self.input2
+        self.resultado = ResultadoCalculo("MOD")
+        yield self.resultado
 
-class EAD(CajaCalculos):
-    def compose(self) -> ComposeResult:
-        with HorizontalGroup():
-            yield FilaCalculo(label="Depth (m)", placeholder="Ej. 25")
-            yield FilaCalculo(label="Oxygen (%)")
-        yield ResultadoCalculo("jfiods", 3242, classes="derecha-resultado")
+    def on_input_changed(self, event: Input.Changed) -> None:
+        """Calcula el nuevo resultado cuando cambia un input."""
+        try:
+            valor1 = float(self.input1.input.value) if self.input1.input.value else 0
+            valor2 = float(self.input2.input.value) if self.input2.input.value else 0
+        except ValueError:
+            valor1 = valor2 = 0  # Si hay un valor no numérico
 
-class BEST_MIX(CajaCalculos):
-    def compose(self) -> ComposeResult:
-        with HorizontalGroup():
-            yield FilaCalculo(label="Depth (m)", placeholder="Ej. 25")
-            yield FilaCalculo(label="Max ppO2 (bar)", placeholder="Ej. 1.6")
-        yield ResultadoCalculo("jfiods", 324432, classes="derecha-resultado")
+
+        d = DepthConverter.for_salt_water(0) # Agua del mar
+        n = NitroxCalculator(d)
+        try:
+            mod = n.mod(valor1, valor2)
+        except (ZeroDivisionError, ValueError):
+            mod = 0
+        
+
+        self.resultado.resultado = mod  # Actualiza el resultado
+
 
 class CalculatorScreen(Screen):
     def compose(self) -> ComposeResult:
         with HorizontalGroup():
             with VerticalGroup():
                 yield (mod := MOD())
-                yield (ead := EAD())
-                yield (best_mix := BEST_MIX())
             yield (teoria := Teoria("", id="teoria"))
         mod.border_title = "MOD"
-        ead.border_title = "EAD"
-        best_mix.border_title = "BEST MIX"
         teoria.border_title = "Teoria"
 
 class PyScubaApp(App):
@@ -78,7 +94,6 @@ class PyScubaApp(App):
 
     def on_ready(self) -> None:
         self.push_screen(CalculatorScreen())
-
 
 
 
