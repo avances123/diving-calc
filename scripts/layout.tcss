@@ -1,32 +1,34 @@
 Screen {
-    layout: horizontal;
-}
 
+    .derecha-resultado{
+        align: right middle;
+    }
 
-.derecha {
-    layout: vertical;
-}
+    FilaCalculo{
+        width: 1fr;
+        margin: 0 0 1 0;
+        .label-variable {
 
+            padding: 1 0 0 1;
+        }
+    }
 
-
-.menu {
-    dock: left;
-    width: 20;
-    height: 100%;
-    border: $secondary;
-}
-
-
-
-.datos {
-    width: 1fr;
-    height: 1fr;
-    border: $secondary;
-}
-
-
-.teoria {
-    width: 1fr;
-    height: 1fr;
-    border: $secondary;
+    CajaCalculos {    
+        width: 1fr;
+        padding: 1;
+        border: tab $foreground 50%;  
+        &:focus {
+            border: tab $primary;  
+        }
+        
+    }
+    #teoria {
+        width: 1fr;
+        height: 1fr;
+        border: tab $foreground 50%;  
+        margin-left: 4;
+        &:focus {
+            border: tab $primary;  
+        }
+    }
 }
