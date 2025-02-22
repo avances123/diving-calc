@@ -1,5 +1,5 @@
 import pytest
-from pyscuba.physics.depth_converter import DepthConverter, DepthConverterFactory, DepthOptions, Salinity
+from diving_calc.physics.depth_converter import DepthConverter, DepthConverterFactory, DepthOptions, Salinity
 
 
 

@@ -1,6 +1,6 @@
 from enum import Enum
 from math import pow
-from pyscuba.physics.pressure_converter import Density, Gravity, AltitudePressure, PressureConverter, Salinity
+from diving_calc.physics.pressure_converter import Density, Gravity, AltitudePressure, PressureConverter, Salinity
 
 class DepthOptions:
     def __init__(self, altitude: float, salinity: Salinity):

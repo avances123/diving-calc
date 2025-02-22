@@ -1,5 +1,5 @@
 import pytest
-from pyscuba.gases.gas_names import GasNames
+from diving_calc.gases.gas_names import GasNames
 
 # Test para la mezcla de aire
 def test_air_name():

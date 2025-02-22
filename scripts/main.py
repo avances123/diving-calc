@@ -1,13 +1,12 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, Header, Digits, Static, OptionList, ContentSwitcher, MarkdownViewer, Markdown
-from textual.containers import Horizontal, Vertical, VerticalScroll, HorizontalGroup, VerticalGroup
+from textual.widgets import Footer, Header, Digits, Static, Markdown
+from textual.containers import HorizontalGroup, VerticalGroup
 from textual.widgets import Input, Label
 from textual.screen import Screen
-from textual.message import Message
 from textual.reactive import reactive
 
-from pyscuba.calculators.nitrox_calculator import NitroxCalculator
-from pyscuba.physics.depth_converter import DepthConverter
+from diving_calc.calculators.nitrox_calculator import NitroxCalculator
+from diving_calc.physics.depth_converter import DepthConverter
 
 
 class Teoria(Markdown):
@@ -191,7 +190,7 @@ class CalculatorScreen(Screen):
         yield Footer()
         yield Header()
 
-class PyScubaApp(App):
+class DivingCalc(App):
     """A Textual app to manage stopwatches."""
     CSS_PATH = "layout.tcss"
     BINDINGS = [
@@ -208,5 +207,5 @@ class PyScubaApp(App):
         
 
 if __name__ == "__main__":
-    app = PyScubaApp()
+    app = DivingCalc()
     app.run()

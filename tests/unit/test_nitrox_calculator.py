@@ -1,9 +1,9 @@
 import pytest
 import math
-from pyscuba.physics.depth_converter import DepthConverter
-from pyscuba.gases.gas_mixtures import GasMixtures
-from pyscuba.calculators.nitrox_calculator import NitroxCalculator
-from pyscuba.physics.pressure_converter import Density
+from diving_calc.physics.depth_converter import DepthConverter
+from diving_calc.gases.gas_mixtures import GasMixtures
+from diving_calc.calculators.nitrox_calculator import NitroxCalculator
+from diving_calc.physics.pressure_converter import Density
 
 
 @pytest.fixture

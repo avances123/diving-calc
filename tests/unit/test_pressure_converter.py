@@ -1,3 +1,3 @@
 import pytest
-from pyscuba.physics.pressure_converter import AltitudePressure
+from diving_calc.physics.pressure_converter import AltitudePressure
 

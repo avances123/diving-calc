@@ -1,4 +1,4 @@
-from pyscuba.physics.pressure_converter import AltitudePressure, PressureConverter
+from diving_calc.physics.pressure_converter import AltitudePressure, PressureConverter
 
 
 class AltitudeCalculator:

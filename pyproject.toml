@@ -1,11 +1,10 @@
 [project]
-name = "pyscuba"
+name = "diving-calc"
 version = "0.1.0"
-description = "Add your description here"
+description = "CLI app for diving calculations"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "pytest>=8.3.4",
     "textual>=2.1.0",
 ]
 

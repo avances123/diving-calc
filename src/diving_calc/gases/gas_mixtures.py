@@ -1,5 +1,5 @@
 from math import pow
-from pyscuba.physics.depth_converter import DepthConverter
+from diving_calc.physics.depth_converter import DepthConverter
 
 class GasMixtures:
     # Relative partial pressure of oxygen in air at surface

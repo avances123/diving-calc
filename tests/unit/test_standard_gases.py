@@ -1,5 +1,5 @@
 import pytest
-from pyscuba.gases.standard_gases import StandardGases, Gas, GasNames
+from diving_calc.gases.standard_gases import StandardGases, Gas, GasNames
 
 def test_nitrox_names():
     """Test para obtener los nombres de los gases de nitrox."""
