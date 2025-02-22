@@ -24,4 +24,5 @@ dev = [
     "textual-dev>=1.7.0",
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
+    "pymermaider>=0.1.4",
 ]
