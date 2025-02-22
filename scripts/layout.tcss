@@ -31,4 +31,10 @@ Screen {
             border: tab $primary;  
         }
     }
+
+    .focused {
+        border: $primary;   /* Cambia el color del borde a azul */
+        
+    }
+    
 }
