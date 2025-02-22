@@ -1,6 +1,6 @@
 import pytest
 from diving_calc.calculators.altitude_calculator import AltitudeCalculator
-from diving_calc.physics.pressure_converter import PressureConverter, AltitudePressure
+from diving_calc.physics.pressure_converter import AltitudePressure
 
 def test_theoretical_depth():
     # Test básico para comprobar el cálculo de la profundidad teórica

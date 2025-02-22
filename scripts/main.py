@@ -5,6 +5,7 @@ from textual.widgets import Input, Label
 from textual.screen import Screen
 from textual.reactive import reactive
 
+from diving_calc.calculators.rounding import Round
 from diving_calc.calculators.nitrox_calculator import NitroxCalculator
 from diving_calc.physics.depth_converter import DepthConverter
 
@@ -71,8 +72,8 @@ class ResultadoCalculo(Static):
 class MOD(CajaCalculos):
     def compose(self) -> ComposeResult:
         with HorizontalGroup():
-            self.input1 = FilaCalculo(label="Max ppO2 (bar)", placeholder="Ej. 1.6")
-            self.input2 = FilaCalculo(label="O2 Fraction (%)")
+            self.input1 = FilaCalculo(label="Max ppO₂ (bar)", placeholder="1.6")
+            self.input2 = FilaCalculo(label="O₂ Fraction (%)", placeholder="50")
             yield self.input1
             yield self.input2
         self.resultado = ResultadoCalculo("MOD (m)")
@@ -91,14 +92,14 @@ class MOD(CajaCalculos):
             mod = n.mod(valor1, valor2)
         except (ZeroDivisionError, ValueError):
             mod = 0
-        self.resultado.resultado = mod  # Actualiza el resultado
+        self.resultado.resultado = Round.round_floor(mod)  # Actualiza el resultado
 
 
 class EAD(CajaCalculos):
     def compose(self) -> ComposeResult:
         with HorizontalGroup():
             self.input1 = FilaCalculo(label="Depth (m)", placeholder="25")
-            self.input2 = FilaCalculo(label="O2 Fraction (%)",  placeholder="36")
+            self.input2 = FilaCalculo(label="O₂ Fraction (%)",  placeholder="36")
             yield self.input1
             yield self.input2
         self.resultado = ResultadoCalculo("EAD (m)")
@@ -124,8 +125,8 @@ class EAD(CajaCalculos):
 class BEST_MIX(CajaCalculos):
     def compose(self) -> ComposeResult:
         with HorizontalGroup():
-            self.input1 = FilaCalculo(label="Depth (m)", placeholder="25")
-            self.input2 = FilaCalculo(label="Max ppO2 (bar)", placeholder="1.6")
+            self.input1 = FilaCalculo(label="Depth (m)", placeholder="34")
+            self.input2 = FilaCalculo(label="Max ppO₂ (bar)", placeholder="1.4")
             yield self.input1
             yield self.input2
         self.resultado = ResultadoCalculo("BEST MIX (%)")
@@ -150,10 +151,10 @@ class PARTIAL_PRESSURE(CajaCalculos):
     def compose(self) -> ComposeResult:
         with HorizontalGroup():
             self.input1 = FilaCalculo(label="Depth (m)", placeholder="25")
-            self.input2 = FilaCalculo(label="O2 Fraction (%)",  placeholder="36")
+            self.input2 = FilaCalculo(label="O₂ Fraction (%)",  placeholder="36")
             yield self.input1
             yield self.input2
-        self.resultado = ResultadoCalculo("PARTIAL PRESSURE (%)")
+        self.resultado = ResultadoCalculo("O₂ PARTIAL PRESSURE (%)")
         yield self.resultado
 
     def on_input_changed(self, event: Input.Changed) -> None:
@@ -173,7 +174,7 @@ class PARTIAL_PRESSURE(CajaCalculos):
 
 
 
-class CalculatorScreen(Screen):
+class NitroxCalculatorScreen(Screen):
     def compose(self) -> ComposeResult:
         with HorizontalGroup():
             with VerticalGroup():
@@ -185,25 +186,40 @@ class CalculatorScreen(Screen):
         mod.border_title = "MOD"
         ead.border_title = "EAD"
         best_mix.border_title = "BEST MIX"
-        partial_pressure.border_title = "BEST MIX"
-        teoria.border_title = "Teoria"
+        partial_pressure.border_title = "O₂ PARTIAL PRESSURE "
+        teoria.border_title = "Theory"
         yield Footer()
         yield Header()
 
+
+
+
+class TrimixCalculatorScreen(Screen):
+    def compose(self) -> ComposeResult:
+        with HorizontalGroup():
+            with VerticalGroup():
+                yield (mod := MOD())
+            yield (teoria := Teoria("theory/mod.md", id="teoria"))
+        mod.border_title = "MOD"
+        teoria.border_title = "Theory"
+        yield Footer()
+        yield Header()
+
+
+
 class DivingCalc(App):
-    """A Textual app to manage stopwatches."""
     CSS_PATH = "layout.tcss"
+    MODES = {
+        "nitrox": NitroxCalculatorScreen,
+        "trimix": TrimixCalculatorScreen,
+        # Add more screens here...
+    }
     BINDINGS = [
-        ("n", "nitrox_calculator", "Toggle Nitrox Calculator"),
-        ("t", "trimix_calculator", "Toggle Trimix Calculator")
+        ("^n", "push_screen('nitrox')", "Nitrox Calculator"),
+        ("^t", "push_screen('trimix')", "Trimix Calculator"),
     ]
-
-
-    
-    
-
-    def on_ready(self) -> None:
-        self.push_screen(CalculatorScreen())
+    def on_mount(self) -> None:
+        self.switch_mode("nitrox")
         
 
 if __name__ == "__main__":
