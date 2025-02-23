@@ -1,15 +1,19 @@
 from enum import Enum
 from math import pow
-from diving_calc.physics.pressure_converter import Density, Gravity, AltitudePressure, PressureConverter, Salinity
+from diving_calc.physics.pressure_converter import Density, Gravity, AltitudePressure, PressureConverter
 
 
 class DepthConverter:
     def __init__(self, density: float, altitude: float):
-        """Initializes depth converter with density and altitude."""
+        """
+        Necesitamos:
+        Densidad del agua en kg/m3
+        Fuerza de la gravedad en m/s2
+        Altitud en m
+        """
         self.density = density
         self._gravity = Gravity.STANDARD
-        pressure_in_pascals = AltitudePressure.pressure(altitude)
-        self._surface_pressure = PressureConverter.pascal_to_bar(pressure_in_pascals)
+        self._surface_pressure = PressureConverter.pascal_to_bar(AltitudePressure.pressure(altitude))
 
     @property
     def surface_pressure(self) -> float:
@@ -35,10 +39,16 @@ class DepthConverter:
         converter._gravity = 10
         return converter
 
+    
+
     def to_bar(self, depth: float) -> float:
         """Calculates absolute pressure (in bars) for given depth in meters."""
         weight_density = self.density * self._gravity
         return PressureConverter.pascal_to_bar(depth * weight_density) + self._surface_pressure
+
+    def to_atm(self, depth: float) -> float:
+        """Calculates absolute pressure (in atm) for given depth in meters."""
+        return PressureConverter.bar_to_atm(self.to_bar(depth))
 
     def from_bar(self, bars: float) -> float:
         """Calculates depth (in meters) from given atmospheric pressure in bars."""

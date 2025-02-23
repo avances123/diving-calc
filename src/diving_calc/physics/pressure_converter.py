@@ -1,10 +1,5 @@
 from math import pow
 
-# Supported types of salt density of water used to distinguish depth converters
-class Salinity:
-    FRESH = 1  # 1000 kg/m3
-    BRACKISH = 2  # EN13319 - 1020 kg/m3
-    SALT = 3  # 1030 kg/m3
 
 class Density:
     """
@@ -21,17 +16,33 @@ class Gravity:
     STANDARD = 9.80665
 
 class PressureConverter:
-    COEFFICIENT = 100000.0
 
     @staticmethod
     def pascal_to_bar(pascals: float) -> float:
-        """Converts pascals to bar."""
-        return pascals / PressureConverter.COEFFICIENT
+        return pascals / 100000.0
 
     @staticmethod
     def bar_to_pascal(bars: float) -> float:
-        """Converts bar to pascals."""
-        return bars * PressureConverter.COEFFICIENT
+        return bars * 100000.0
+
+
+    @staticmethod
+    def bar_to_atm(bars: float) -> float:
+        return bars * 0.986923
+
+    @staticmethod
+    def atm_to_bar(atm: float) -> float:
+        return atm * 1.01325
+
+    @staticmethod
+    def pascal_to_atm(pascals: float) -> float:
+        return PressureConverter.bar_to_atm(PressureConverter.pascal_to_bar(pascals))
+
+    @staticmethod
+    def atm_to_pascal(atm: float) -> float:
+        return PressureConverter.bar_to_pascal(PressureConverter.atm_to_bar(atm))
+
+
 
 class AltitudePressure:
     """
