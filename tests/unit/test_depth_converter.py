@@ -1,5 +1,5 @@
 import pytest
-from diving_calc.physics.depth_converter import DepthConverter, DepthOptions, Salinity
+from diving_calc.physics.depth_converter import DepthConverter
 
 
 

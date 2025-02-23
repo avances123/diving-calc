@@ -1,8 +1,5 @@
 from diving_calc.physics.depth_converter import DepthConverter
 from diving_calc.gases.gas_mixtures import GasMixtures
-import math
-
-
 
 
 class NitroxCalculator:
