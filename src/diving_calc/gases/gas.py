@@ -7,6 +7,7 @@ class Gas:
     # Constants
     MIN_PPO2 = 0.18
     O2_IN_AIR = 0.209
+    N2_IN_AIR = 1 - O2_IN_AIR
 
     # Atributos
     o2: float

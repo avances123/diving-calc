@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import List
 
-@dataclass
+@dataclass(frozen=True)
 class Compartment:
     n2_half_time: float
     n2_a: float
@@ -10,7 +9,7 @@ class Compartment:
     he_a: float
     he_b: float
 
-class Compartments(list):
+class CompartmentsZHL16(list):
     def __init__(self):
         """
         Removed 1, used 1b compartment instead

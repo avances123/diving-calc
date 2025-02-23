@@ -215,8 +215,8 @@ class DivingCalc(App):
         # Add more screens here...
     }
     BINDINGS = [
-        ("^n", "push_screen('nitrox')", "Nitrox Calculator"),
-        ("^t", "push_screen('trimix')", "Trimix Calculator"),
+        ("^n", "switch_mode('nitrox')", "Nitrox Calculator"),
+        ("^t", "switch_mode('trimix')", "Trimix Calculator"),
     ]
     def on_mount(self) -> None:
         self.switch_mode("nitrox")
