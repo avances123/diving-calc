@@ -11,6 +11,7 @@ class DepthConverter:
         Altitud en m
         """
         self.density = density
+        self.altitude = altitude
         self._gravity = Gravity.STANDARD
         self._surface_pressure = PressureConverter.pascal_to_bar(AltitudePressure.pressure(altitude))
 
