@@ -12,11 +12,11 @@ class NitroxCalculator:
     def ead(self, gas: Gas, depth: float) -> float:
         """
         Calcula la profundidad equivalente de aire para una mezcla nitrox dada.
-
-        :param percent_O2: Porcentaje de oxígeno en el gas.
-        :param depth: Profundidad actual en metros.
-        :return: Profundidad equivalente de aire en metros.
+        No sirve con oxigeno narcotico ni con trimix
         """
+        if gas.he > 0:
+            raise ValueError("No se puede calcular la EAD con trimix")
+            
         bars = self.depth_converter.to_bar(depth)
         result = gas.ead(bars)
 
@@ -63,5 +63,5 @@ class NitroxCalculator:
         :return: Presión parcial.
         """
         bar = self.depth_converter.to_bar(depth)
-        result = GasMixtures.partial_pressure(bar, fO2) / 100
+        result = Gas.partial_pressure(bar, fO2) / 100
         return result
