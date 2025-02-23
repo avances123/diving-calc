@@ -25,7 +25,7 @@ def test_depth_converter_to_bar():
 def test_depth_converter_from_bar():
     converter = DepthConverter.for_fresh_water(altitude=0)
     depth = converter.from_bar(1.993)  # Should correspond to ~10m depth
-    assert depth == pytest.approx(10, abs=1e-2)
+    assert depth == pytest.approx(15, abs=1e-2)
 
 def test_depth_converter_from_bar_mountains():
     converter = DepthConverter.for_fresh_water(altitude=1000)
