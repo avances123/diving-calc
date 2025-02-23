@@ -2,25 +2,6 @@ from enum import Enum
 from math import pow
 from diving_calc.physics.pressure_converter import Density, Gravity, AltitudePressure, PressureConverter, Salinity
 
-class DepthOptions:
-    def __init__(self, altitude: float, salinity: Salinity):
-        """Defines depth calculation options."""
-        self.altitude = altitude
-        self.salinity = salinity
-
-class DepthConverterFactory:
-    def __init__(self, options: DepthOptions):
-        """Creates a factory instance for depth converters."""
-        self.options = options
-
-    def create(self):
-        """Creates a new instance of depth converter based on provided salinity."""
-        if self.options.salinity == Salinity.SALT:
-            return DepthConverter.for_salt_water(self.options.altitude)
-        elif self.options.salinity == Salinity.BRACKISH:
-            return DepthConverter.for_brackish_water(self.options.altitude)
-        else:
-            return DepthConverter.for_fresh_water(self.options.altitude)
 
 class DepthConverter:
     def __init__(self, density: float, altitude: float):

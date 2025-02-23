@@ -1,17 +1,7 @@
 import pytest
-from diving_calc.physics.depth_converter import DepthConverter, DepthConverterFactory, DepthOptions, Salinity
+from diving_calc.physics.depth_converter import DepthConverter, DepthOptions, Salinity
 
 
-
-@pytest.mark.parametrize("salinity, expected_density", [
-    (Salinity.FRESH, 1000.0),
-    (Salinity.BRACKISH, 1020.0),
-    (Salinity.SALT, 1030.0)
-])
-def test_depth_converter_factory(salinity, expected_density):
-    options = DepthOptions(altitude=0, salinity=salinity)
-    converter = DepthConverterFactory(options).create()
-    assert converter.density == expected_density
 
 def test_depth_converter_surface_pressure():
     converter = DepthConverter.for_fresh_water(altitude=0)
@@ -25,7 +15,7 @@ def test_depth_converter_to_bar():
 def test_depth_converter_from_bar():
     converter = DepthConverter.for_fresh_water(altitude=0)
     depth = converter.from_bar(1.993)  # Should correspond to ~10m depth
-    assert depth == pytest.approx(15, abs=1e-2)
+    assert depth == pytest.approx(10, abs=1e-2)
 
 def test_depth_converter_from_bar_mountains():
     converter = DepthConverter.for_fresh_water(altitude=1000)
