@@ -15,6 +15,10 @@ class Tissue():
     a: float = 0 # Buhlmann a mValue coefficient.
     b: float = 0 # Buhlmann b mValue coefficient.
 
+    @property
+    def p_total(self) -> float:
+        return self.p_n2 + self.p_he
+
     def __post_init__(self):
         self.p_n2 = Tissue.inspired_n2_pressure(self.surface_pressure)
         self.update_coefficients()
@@ -37,6 +41,7 @@ class Tissue():
         surface_m_value = self.m_value(ambient_pressure)
         result = (self.p_total - ambient_pressure) / (surface_m_value - ambient_pressure)
         return max(0, result)
+    
 
     def saturation_ratio(self, ambient_pressure: float) -> float:
         if(self.p_total < ambient_pressure):
@@ -45,9 +50,7 @@ class Tissue():
     
              
 
-    @property
-    def p_total(self) -> float:
-        return self.p_n2 + self.p_he
+
 
 
     @staticmethod
@@ -59,6 +62,8 @@ class Tissue():
     @staticmethod
     def pressure_in_lungs(ambient_pressure: float) -> float:
         """ Constante para la presión de vapor de agua a 37°C (en bares). """
+
+        # TODO comprobar la presion del vapor 0.0567?
         water_vapour_pressure = 0.0627
         return ambient_pressure - water_vapour_pressure
 
