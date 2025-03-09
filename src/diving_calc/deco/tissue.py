@@ -5,7 +5,25 @@ from dataclasses import dataclass
 from diving_calc.physics.decompression import schreiner_equation, pressure_in_lungs
 import numpy as np
 from rich import print
-from rich.table import Table
+import logging
+from rich.logging import RichHandler
+from typing import Optional
+
+
+# Configuración del logger
+logging.basicConfig(
+    level=logging.DEBUG,  # Establecer el nivel de logging a DEBUG
+    format="%(message)s",  # Formato simple
+    handlers=[RichHandler()]
+)
+
+# Crear un logger
+logger = logging.getLogger("rich")
+logger.setLevel(logging.INFO)
+
+
+
+
 
 DEFAULT_COMPARTMENT = Compartment(5.0, 1.1696, 0.5578, 1.88, 1.6189, 0.4770)
 
@@ -24,22 +42,6 @@ class Tissue():
     a: float = 0 # Buhlmann a mValue coefficient.
     b: float = 0 # Buhlmann b mValue coefficient.
 
-    def tabla(self):
-        table = Table(title="Tissue Information", title_style="bold magenta")
-        table.add_column("Property", style="bold cyan")
-        table.add_column("Value", style="bold white")
-
-        table.add_row("Compartment", str(self.compartment))
-        table.add_row("Surface Pressure", f"{self.surface_pressure:.2f} bar")
-        table.add_row("N2 Pressure", f"{self.p_n2:.2f} bar")
-        table.add_row("He Pressure", f"{self.p_he:.2f} bar")
-        table.add_row("Total Pressure", f"{self.p_total:.2f} bar")
-        table.add_row("a Coefficient", f"{self.a:.4f}")
-        table.add_row("b Coefficient", f"{self.b:.4f}")
-        table.add_row("Ceiling", f"{self.ceiling():.2f} bar")
-
-        print(table)
-
     @property
     def p_total(self) -> float:
         return self.p_n2 + self.p_he
@@ -57,8 +59,10 @@ class Tissue():
         """Para ponderar la cantidad de N2 y He"""
         self.a = ((self.compartment.n2_a * self.p_n2) + (self.compartment.he_a * self.p_he)) / (self.p_total)
         self.b = ((self.compartment.n2_b * self.p_n2) + (self.compartment.he_b * self.p_he)) / (self.p_total)
-    
+        self.a *= 0.70
+        self.b *= 0.30
 
+        
     def ceiling(self) -> float:
         """Returns the ceiling pressure for this tissue."""
         return (self.p_total - self.a) * self.b
@@ -97,6 +101,11 @@ class Tissue():
         # Calculo ratio_descenso
         ratio_descenso = (presion_final - presion_inicial) / tiempo
 
+        if (ratio_descenso > 0):
+            logger.debug(f"Bajando de {presion_inicial} bar a {presion_final} bar con un ratio de {ratio_descenso} bar/min")
+        elif (ratio_descenso < 0):
+            logger.debug(f"Subiendo de {presion_inicial} bar a {presion_final} bar con un ratio de {ratio_descenso} bar/min")
+
         # Para N2
         self.p_n2 = self.presion_tejido(presion_inicial, tiempo, ratio_descenso, 
                                 f_gas=0.79, half_time=self.compartment.n2_half_time, 
@@ -108,7 +117,6 @@ class Tissue():
                                 presion_inicial_tejido=self.p_he)
 
         self.update_coefficients()
-
 
 
 
