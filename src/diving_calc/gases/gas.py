@@ -108,10 +108,10 @@ class Gas:
 
 
     @staticmethod
-    def partial_pressure(abs_pressure: float, volume_fraction: float) -> float:
+    def partial_pressure(total_pressure: float, volume_fraction: float) -> float:
         """
         Calculates the partial pressure of a gas component from the volume gas fraction and total pressure.
         """
-        return abs_pressure * volume_fraction
+        return total_pressure * volume_fraction
 
 
