@@ -47,7 +47,10 @@ class Tissue():
         return self.p_n2 + self.p_he
 
     def m_value(self, pressure: float) -> float:
-        """Returns m-value for the tissue at the given pressure (surface or ambient)."""
+        """
+        Presion tolerada para un tejido
+        Returns m-value for the tissue at the given pressure
+        """
         return self.a + pressure / self.b
 
     def __post_init__(self):
@@ -59,15 +62,10 @@ class Tissue():
         """Para ponderar la cantidad de N2 y He"""
         self.a = ((self.compartment.n2_a * self.p_n2) + (self.compartment.he_a * self.p_he)) / (self.p_total)
         self.b = ((self.compartment.n2_b * self.p_n2) + (self.compartment.he_b * self.p_he)) / (self.p_total)
-        self.a *= 0.70
-        self.b *= 0.30
 
-        
-    def ceiling(self) -> float:
-        """Returns the ceiling pressure for this tissue."""
-        return (self.p_total - self.a) * self.b
-
-
+    def ceiling(self, gf=1):
+        """ pyplan TODO comparar con ceiling"""
+        return ((self.p_total - self.a * gf)/(gf / self.b - gf + 1))
 
     def presion_tejido(self, presion_ambiente: float, tiempo: float, ratio_descenso: float = 0.0, 
                     f_gas: float = 0.79, half_time: float = None, presion_inicial_tejido: float = 0.0) -> float:
